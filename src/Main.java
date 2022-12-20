@@ -8,23 +8,16 @@ import java.util.Date;
 
 public class Main {
 
+  //Verzeichnise Auf dem Server
   static String DIR_BAU_BAU = "bau";
   static String DIR_KEIN_BAU = "keinbau";
   static String DIR_ERROR_BAU = "bauerror";
 
+
+  //Suchworte
   static String STRING_KEIN_BAU_DESCRIPTION = "kein bau";
   static String STRING_BAU_DESCRIPTION = "bau";
 
-
-  // writing single sets
-  public static void writingout(String line, String apath) throws IOException {
-    String currentDir = System.getProperty("user.dir");
-    Date date = new Date();
-    PrintWriter out = new PrintWriter(currentDir + "/" + apath + "/result." + date.getTime());
-    System.out.println(line);
-    out.close();
-
-  }
 
   public static void checkLine(String line, int numbers) throws IOException {
 
@@ -39,7 +32,7 @@ public class Main {
       System.err.println("Count Delimiter : " + count);
     }
 
-    // hier wird nicht bebaut
+    // is kein bau
     if ((line.contains(STRING_KEIN_BAU_DESCRIPTION.toUpperCase()))) {
       System.out.println(numbers + " " + line);
       try {
@@ -49,7 +42,9 @@ public class Main {
         e.printStackTrace();
       }
     }
-    // hier wird gebaut
+    "**************************Die Writing Messges wuerd ich in ne Queue wir rabbit stecken****************"
+
+    // is "bau" ?
     else if (line.contains(STRING_BAU_DESCRIPTION.toUpperCase()) && !line.toString().contains("Kein".toUpperCase())) {
       System.out.println(numbers + " Zeile passt..");
       try {
@@ -61,18 +56,20 @@ public class Main {
       }
       //sending email to nesseray user
     }
-    // hier wird gar ncihts gemacht
-    else if ((!line.toString().contains(STRING_KEIN_BAU_DESCRIPTION.toUpperCase()) && !line
-            .contains(STRING_BAU_DESCRIPTION.toUpperCase()))) {
-      System.err.println(numbers + line);
-      try {
-        //mv to errorsprodessed
-        writingout(line, DIR_ERROR_BAU);
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
+    // is "nothing" ?
+
+    //FIX ME why he only write in errorbau???
     return;
+
+  }
+
+  // writing single lines to own files in right folder to reconstruate
+  public static void writingout(String line, String apath) throws IOException {
+    String currentDir = System.getProperty("user.dir");
+    Date date = new Date();
+    PrintWriter out = new PrintWriter(currentDir + "/" + apath + "/result." + date.getTime());
+    System.out.println(line);
+    out.close();
 
   }
 
@@ -84,6 +81,7 @@ public class Main {
     File afile;
     afile = new File(currentDir + "/csv/kunden.txt");
 
+    // check if File Exist
     if (!afile.canRead() || !afile.isFile()) {
       System.err.println("File not found!");
       System.exit(0);
@@ -100,6 +98,7 @@ public class Main {
             System.out.println("Gelesene Zeile: " + line);
             numbers++;
             try {
+              // check what kind of line?
               checkLine(line, numbers++);
             } catch (IOException e) {
               e.printStackTrace();
