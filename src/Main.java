@@ -8,8 +8,10 @@ import java.util.Date;
 
 public class Main {
 
+  //FIX ME ENUM WAER BESSER
+
   //Verzeichnise Auf dem Server
-  static String DIR_BAU_BAU = "bau";
+  static String DIR_BAU = "bau";
   static String DIR_KEIN_BAU = "keinbau";
   static String DIR_ERROR_BAU = "bauerror";
 
@@ -32,6 +34,8 @@ public class Main {
       System.err.println("Count Delimiter : " + count);
     }
 
+    /* &&&&&&&&&&&&&&&&&&&&&&&&&& Die Writing Messges wuerd ich in ne Queue wie rabbit stecken &&&&&&&&&&&&&&&&&&&&*/
+
     // is kein bau
     if ((line.contains(STRING_KEIN_BAU_DESCRIPTION.toUpperCase()))) {
       System.out.println(numbers + " " + line);
@@ -42,23 +46,24 @@ public class Main {
         e.printStackTrace();
       }
     }
-    "**************************Die Writing Messges wuerd ich in ne Queue wir rabbit stecken****************"
 
-    // is "bau" ?
-    else if (line.contains(STRING_BAU_DESCRIPTION.toUpperCase()) && !line.toString().contains("Kein".toUpperCase())) {
+    // nothing
+    else if (line.contains(STRING_BAU_DESCRIPTION.toUpperCase()) && !line.contains("Kein".trim().toUpperCase())) {
       System.out.println(numbers + " Zeile passt..");
       try {
         //mv to prodessed
-        writingout(line.toString(), DIR_BAU_BAU);
+        System.out.println(" -------------- WRITING TO BAU ------------------------");
+        writingout(line.toString(), DIR_BAU);
         return;
       } catch (IOException e) {
         e.printStackTrace();
       }
+      //FIXME
       //sending email to nesseray user
     }
-    // is "nothing" ?
 
-    //FIX ME why he only write in errorbau???
+    //FIXME
+    // why he only write in errorbau???
     return;
 
   }
@@ -67,6 +72,7 @@ public class Main {
   public static void writingout(String line, String apath) throws IOException {
     String currentDir = System.getProperty("user.dir");
     Date date = new Date();
+    System.out.println("Directory will written:" + currentDir + "/" + apath + "/result." + date.getTime());
     PrintWriter out = new PrintWriter(currentDir + "/" + apath + "/result." + date.getTime());
     System.out.println(line);
     out.close();
@@ -87,7 +93,7 @@ public class Main {
       System.exit(0);
 
     } else {
-
+      //Processing File lines of File
       BufferedReader bf = null;
       try {
         bf = new BufferedReader(new FileReader(currentDir + "/csv/kunden.txt"));
@@ -107,6 +113,9 @@ public class Main {
         } catch (IOException e) {
           e.printStackTrace();
         }
+
+
+        // HERE WE MAKING BACKUP FOR ORIGINAL FILE WITH TIMESTAMP, so we see which one is already processed ( derupting test)
 
         // File (or directory) with old name
         //File file = new File("oldname");
