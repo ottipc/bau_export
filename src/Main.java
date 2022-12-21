@@ -59,11 +59,6 @@ public class Main {
       //FIXME
       //sending email to nesseray user
     }
-
-    //FIXME
-    // why he only write in errorbau???
-    return;
-
   }
 
   // writing single lines to own files in right folder to reconstruate
