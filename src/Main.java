@@ -21,7 +21,7 @@ public class Main {
   static String STRING_BAU_DESCRIPTION = "bau";
 
 
-  public static void checkLine(String line, int numbers) throws IOException {
+  public static void checkLine(String line, int linenumber) throws IOException {
 
     // if (line.trim().indexOf(';') != 3) { ging nicht
     int count = 0;
@@ -31,14 +31,13 @@ public class Main {
     }
 
     if (count != 3) {
-      System.err.println("Count Delimiter : " + count);
+      System.err.println("Line " + linenumber + "-> Count Delimiter : " + count);
     }
 
     /* &&&&&&&&&&&&&&&&&&&&&&&&&& Die Writing Messges wuerd ich in ne Queue wie rabbit stecken &&&&&&&&&&&&&&&&&&&&*/
 
-    // is kein bau
-    if ((line.contains(STRING_KEIN_BAU_DESCRIPTION.toUpperCase()))) {
-      System.out.println(numbers + " " + line);
+    if (line.toUpperCase().contains(STRING_KEIN_BAU_DESCRIPTION.toUpperCase())) {
+      System.out.println(" Zeile " + linenumber + " : " + STRING_KEIN_BAU_DESCRIPTION);
       try {
         writingout(line, DIR_KEIN_BAU);
         return;
@@ -48,11 +47,10 @@ public class Main {
     }
 
     // nothing
-    else if (line.contains(STRING_BAU_DESCRIPTION.toUpperCase()) && !line.contains("Kein".trim().toUpperCase())) {
-      System.out.println(numbers + " Zeile passt..");
+    else if (line.toUpperCase().contains(STRING_BAU_DESCRIPTION.toUpperCase()) && !line.toUpperCase().contains("Kein".toUpperCase())) {
       try {
         //mv to prodessed
-        System.out.println(" -------------- WRITING TO BAU ------------------------");
+        System.out.println(" Zeile " + linenumber + " : " + STRING_BAU_DESCRIPTION);
         writingout(line.toString(), DIR_BAU);
         return;
       } catch (IOException e) {
@@ -69,20 +67,23 @@ public class Main {
   }
 
   // writing single lines to own files in right folder to reconstruate
-  public static void writingout(String line, String apath) throws IOException {
+  public static boolean writingout(String line, String apath) throws IOException {
+    System.out.println("--------------------IN WRITE OUT --------------------------");
+
     String currentDir = System.getProperty("user.dir");
     Date date = new Date();
     System.out.println("Directory will written:" + currentDir + "/" + apath + "/result." + date.getTime());
     PrintWriter out = new PrintWriter(currentDir + "/" + apath + "/result." + date.getTime());
     System.out.println(line);
     out.close();
-
+    return true;
   }
+
 
   public static void main(String[] args) {
     String currentDir = System.getProperty("user.dir");
     System.out.println("Current dir using System:" + currentDir);
-    System.out.println("Usinng   :" + currentDir + "/csv/kunden.txt");
+    System.out.println("Using : " + currentDir + "/csv/kunden.txt");
 
     File afile;
     afile = new File(currentDir + "/csv/kunden.txt");
@@ -101,11 +102,11 @@ public class Main {
         int numbers = 0;
         try {
           while ((line = bf.readLine()) != null) {
-            System.out.println("Gelesene Zeile: " + line);
+            //System.out.println("Gelesene Zeile: " + line);
             numbers++;
             try {
               // check what kind of line?
-              checkLine(line, numbers++);
+              checkLine(line, numbers);
             } catch (IOException e) {
               e.printStackTrace();
             }
